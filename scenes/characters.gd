@@ -7,7 +7,7 @@ extends CharacterBody2D
 @onready var player_sprite: Sprite2D = $PlayerSprite
 
 enum ControlScheme {CPU, P1, P2}
-enum State {MOVING, TACKLING}
+enum State {MOVING, TACKLING, RECOVERING}
 
 var heading := Vector2.RIGHT
 var state_factory := PlayerStateFactory.new()
