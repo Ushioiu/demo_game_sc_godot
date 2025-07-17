@@ -1,19 +1,63 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "GDScript: Launch Project",
+      "type": "godot",
+      "request": "launch",
+      "project": "${workspaceFolder}",
+      "debug_collisions": false,
+      "debug_paths": false,
+      "debug_navigation": false,
+      "additional_options": ""
+    }
+  ]
+}
+/* {
     "version": "0.2.0",
     "configurations": [
-    
         {
-            "name": "GDScript: Launch Project",
-            "type": "godot",
-            "request": "launch",
-            "project": "${workspaceFolder}",
-            "debug_collisions": false,
-            "debug_paths": false,
-            "debug_navigation": false,
-            "additional_options": ""
+            // ========== 核心配置 ==========
+            "name": "Launch", // 调试会话名称（显示在VS Code调试下拉菜单中）[3,4](@ref)
+            "type": "godot",  // 必须为'godot'，表示使用Godot调试器（需安装godot-vscode-plugin插件）[2,3](@ref)
+            "request": "launch", // 'launch'启动新实例，'attach'附加到已运行的Godot进程[3,5](@ref)
+            "project": "${workspaceFolder}", // Godot项目根目录路径（${workspaceFolder}是VS Code变量，表示当前工作区）[1,4](@ref)
+            
+            // ========== 网络连接配置 ==========
+            "address": "127.0.0.1", // Godot调试服务器监听IP（默认本地回环地址）[3](@ref)
+            "port": 6007,           // 调试端口，需与Godot编辑器设置的DAP端口一致（默认6007）[3,4](@ref)
+
+            // ========== 场景加载配置 ==========
+            "scene": "main|current|pinned|<path>", // 启动时加载的场景：
+                                                 // - 'main': project.godot中定义的主场景
+                                                 // - 'current': Godot编辑器当前打开的场景
+                                                 // - 'pinned': Godot编辑器中固定的场景
+                                                 // - 直接指定路径如"res://main.tscn"[1,4](@ref)
+            "editor_path": "<path>", // （可选）指定Godot可执行文件路径，若未设置则插件自动查找[1](@ref)
+
+            // ========== 引擎调试参数 ==========
+            // 性能分析
+            "profiling": false,     // 启用性能分析工具（true会记录性能数据，影响运行效率）[4](@ref)
+            "single_threaded_scene": false, // 强制场景单线程运行（调试线程问题时使用）[4](@ref)
+
+            //  可视化调试 
+            "debug_collisions": false,  // 显示碰撞体边界（红色线框）[4](@ref)
+            "debug_paths": false,       // 显示Path2D/Path3D节点的路径轨迹[4](@ref)
+            "debug_navigation": false,  // 显示导航网格（蓝色线框）[4](@ref)
+            "debug_avoidance": false,   // 显示AI避障系统调试信息[4](@ref)
+            "debug_stringnames": false, // （Godot 4.0+）启用StringName内部标识符调试[4](@ref)
+
+            //  帧控制 
+            "frame_delay": 0,      // 每帧延迟（毫秒），模拟低性能设备[4](@ref)
+            "time_scale": 1.0,     // 时间缩放因子（0.5=慢速，2.0=加速，用于调试时间相关逻辑）[4](@ref)
+            "disable_vsync": false, // 禁用垂直同步（true可解锁帧率测试性能）[4](@ref)
+            "fixed_fps": 60,       // 强制固定帧率（0=不限制，60=标准游戏帧率）[4](@ref)
+
+            // ========== 其他选项 ==========
+            "additional_options": "" // 额外的Godot命令行参数（例如："--verbose"启用详细日志）[1,4](@ref)
         }
     ]
-}
+}  */
