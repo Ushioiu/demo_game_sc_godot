@@ -10,6 +10,7 @@ func _enter_tree() -> void:
 	time_start_shot = Time.get_ticks_msec()
 	player.velocity = Vector2.ZERO
 	animation_player.play("prep_kick")
+	shot_direction = player.heading
 
 func _process(delta) -> void:
 	shot_direction += KeyUtils.get_input_vector(player.control_sheme) * delta
@@ -19,8 +20,6 @@ func _process(delta) -> void:
 		var bouns := ease(ease_time, EASE_REWARD_FACTOR)
 		var shot_power := player.power * (1 + bouns)
 		shot_direction = shot_direction.normalized()
-		if shot_direction == Vector2.ZERO:
-			shot_direction = player.heading
 		# print(shot_direction, shot_power)
 		var next_state_data = PlayerStateData \
 								.build() \
