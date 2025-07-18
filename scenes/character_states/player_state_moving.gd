@@ -13,8 +13,12 @@ func handle_human_movenment() -> void:
 	var direction := KeyUtils.get_input_vector(player.control_sheme)
 	player.velocity = direction * player.speed # 每秒像素
 	
-	if player.has_ball() and \
-	KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
+	if player.velocity != Vector2.ZERO:
+		teammate_detection_area.rotation = player.velocity.angle()
+
+	if player.has_ball() and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.PASS):
+		transition_state(Player.State.PASSING)
+	if player.has_ball() and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
 		transition_state(Player.State.PREPPING_SHOT)
 
 	# if player.velocity != Vector2.ZERO and \

@@ -1,7 +1,7 @@
 class_name BallStateShot extends BallState
 
 const SHOT_SPRITE_SCALE := 0.8
-const SHOT_HEIGHT := 30
+const SHOT_HEIGHT := 5
 const DURATION_SHOT := 1000
 
 var time_since_shot := Time.get_ticks_msec()
@@ -12,6 +12,8 @@ func _enter_tree() -> void:
 	ball.height = SHOT_HEIGHT
 
 func _process(delta: float) -> void:
+	# TODO wait for update
+	# !当时间刚好过了，又碰上角色那么直接落地
 	if Time.get_ticks_msec() - time_since_shot > DURATION_SHOT:
 		state_transition_requested.emit(Ball.State.FREEFORM)
 	else :
