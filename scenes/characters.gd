@@ -3,11 +3,14 @@ extends CharacterBody2D
 
 @export var control_sheme: ControlScheme
 @export var speed: float
+@export var power: float
+@export var ball: Ball
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var player_sprite: Sprite2D = $PlayerSprite
 
 enum ControlScheme {CPU, P1, P2}
-enum State {MOVING, TACKLING, RECOVERING}
+enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING}
 
 var heading := Vector2.RIGHT
 var state_factory := PlayerStateFactory.new()
@@ -47,3 +50,6 @@ func flip_sprites() -> void:
 		player_sprite.flip_h = false
 	elif heading == Vector2.LEFT:
 		player_sprite.flip_h = true
+
+func has_ball() -> bool:
+	return ball.carrier == self
