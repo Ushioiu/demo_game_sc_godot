@@ -19,6 +19,11 @@ func _process(delta) -> void:
 		var bouns := ease(ease_time, EASE_REWARD_FACTOR)
 		var shot_power := player.power * (1 + bouns)
 		shot_direction = shot_direction.normalized()
-		print(shot_direction, shot_power)
-		state_transition_requested.emit(Player.State.SHOOTING)
-
+		if shot_direction == Vector2.ZERO:
+			shot_direction = player.heading
+		# print(shot_direction, shot_power)
+		var next_state_data = PlayerStateData \
+								.build() \
+								.set_shot_direction(shot_direction) \
+								.set_shot_power(shot_power)
+		transition_state(Player.State.SHOOTING, next_state_data)
