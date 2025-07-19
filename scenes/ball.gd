@@ -8,6 +8,8 @@ extends AnimatableBody2D
 @export var friction_air: float
 @export var friction_ground: float
 
+const BOUNCINESS := 0.8
+
 enum State {CARRIED, FREEFORM, SHOT}
 
 var carrier: Player = null
@@ -44,3 +46,6 @@ func pass_to(direction_to: Vector2) -> void:
 	velocity = pass_velocity * pass_direction
 	carrier = null
 	switch_state(State.FREEFORM)
+
+func stop() -> void:
+	velocity = Vector2.ZERO
