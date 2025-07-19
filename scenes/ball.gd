@@ -5,6 +5,9 @@ extends AnimatableBody2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var ball_sprite: Sprite2D = $BallSprite
 
+@export var friction_air: float
+@export var friction_ground: float
+
 enum State {CARRIED, FREEFORM, SHOT}
 
 var carrier: Player = null
@@ -33,3 +36,11 @@ func ball_shot(shot_velocity: Vector2) -> void:
 	velocity = shot_velocity
 	carrier = null
 	switch_state(State.SHOT)
+
+func pass_to(direction_to: Vector2) -> void:
+	var pass_direction := self.position.direction_to(direction_to)
+	var pass_distance := self.position.distance_to(direction_to)
+	var pass_velocity := sqrt(2 * pass_distance * friction_ground)
+	velocity = pass_velocity * pass_direction
+	carrier = null
+	switch_state(State.FREEFORM)
