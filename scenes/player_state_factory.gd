@@ -7,6 +7,9 @@ var states: Dictionary = {
 	Player.State.PREPPING_SHOT: PlayerStatePreppingShot,
 	Player.State.SHOOTING: PlayerStateShooting,
 	Player.State.PASSING: PlayerStatePassing,
+	Player.State.HEADER: PlayerStateHeader,
+	Player.State.VOLLEY_KICK: PlayerStateVolleyKick,
+	Player.State.BICYLE_KICK: PlayerStateBicyleKick,
 }
 
 func get_fresh_state(state: Player.State) -> PlayerState:
