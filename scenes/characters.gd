@@ -19,11 +19,12 @@ const CONTROL_SHEME_MAP: Dictionary = {
 	ControlScheme.P1: preload("res://assets/art/props/1p.png"),
 	ControlScheme.P2: preload("res://assets/art/props/2p.png")
 }
+const BALL_CONTROL_HEIGHT_MAX := 10.0
 
 const GRAVITY := 8.0
 
 enum ControlScheme {CPU, P1, P2}
-enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK}
+enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL}
 
 var heading := Vector2.RIGHT
 var state_factory := PlayerStateFactory.new()
@@ -89,3 +90,7 @@ func set_sprite_visibility() -> void:
 func on_animation_complete() -> void:
 	if current_state != null:
 		current_state.on_animation_complete()
+
+func control_ball() -> void:
+	if ball.height > BALL_CONTROL_HEIGHT_MAX:
+		switch_states(State.CHEST_CONTROL)

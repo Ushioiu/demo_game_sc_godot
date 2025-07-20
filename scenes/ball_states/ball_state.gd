@@ -1,7 +1,7 @@
 class_name BallState
 extends Node
 
-const GRAVITY := 10.0
+const GRAVITY := 5.0
 
 signal state_transition_requested(state: Ball.State)
 

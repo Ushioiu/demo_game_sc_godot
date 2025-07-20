@@ -10,6 +10,7 @@ var states: Dictionary = {
 	Player.State.HEADER: PlayerStateHeader,
 	Player.State.VOLLEY_KICK: PlayerStateVolleyKick,
 	Player.State.BICYLE_KICK: PlayerStateBicyleKick,
+	Player.State.CHEST_CONTROL: PlayerStateChestControl,
 }
 
 func get_fresh_state(state: Player.State) -> PlayerState:
