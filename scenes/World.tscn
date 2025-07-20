@@ -32,6 +32,7 @@ ball = NodePath("../ActorsContainer/Ball")
 
 [node name="Grass" type="Sprite2D" parent="Backgrounds"]
 modulate = Color(0.517647, 0.803922, 0.164706, 1)
+position = Vector2(79, -31)
 texture = ExtResource("1_k0juu")
 centered = false
 
@@ -112,19 +113,25 @@ position = Vector2(9.00002, 58)
 rotation = -0.102974
 shape = SubResource("RectangleShape2D_h1bdy")
 
-[node name="Player" parent="ActorsContainer" node_paths=PackedStringArray("ball") instance=ExtResource("4_i7141")]
+[node name="Player" parent="ActorsContainer" node_paths=PackedStringArray("ball", "own_goal", "target_goal") instance=ExtResource("4_i7141")]
 position = Vector2(130, 94)
 ball = NodePath("../Ball")
+own_goal = NodePath("../PitchObjects/GoalHome")
+target_goal = NodePath("../PitchObjects/GoalAway")
 
-[node name="Player2" parent="ActorsContainer" node_paths=PackedStringArray("ball") instance=ExtResource("4_i7141")]
-position = Vector2(162, 126)
+[node name="Player2" parent="ActorsContainer" node_paths=PackedStringArray("ball", "own_goal", "target_goal") instance=ExtResource("4_i7141")]
+position = Vector2(542, 192)
 control_sheme = 1
 ball = NodePath("../Ball")
+own_goal = NodePath("../PitchObjects/GoalHome")
+target_goal = NodePath("../PitchObjects/GoalAway")
 
-[node name="Player3" parent="ActorsContainer" node_paths=PackedStringArray("ball") instance=ExtResource("4_i7141")]
-position = Vector2(190, 96)
+[node name="Player3" parent="ActorsContainer" node_paths=PackedStringArray("ball", "own_goal", "target_goal") instance=ExtResource("4_i7141")]
+position = Vector2(673, 177)
 control_sheme = 2
 ball = NodePath("../Ball")
+own_goal = NodePath("../PitchObjects/GoalHome")
+target_goal = NodePath("../PitchObjects/GoalAway")
 
 [node name="Ball" parent="ActorsContainer" instance=ExtResource("5_1lgw5")]
-position = Vector2(212, 123)
+position = Vector2(567, 193)

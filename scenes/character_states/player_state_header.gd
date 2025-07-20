@@ -4,6 +4,10 @@ const BONUS_POWER := 1.3
 const HEIGHT_START := 0.1
 const HEIGHT_VELOCITY := 1.5
 
+func _ready() -> void:
+	air_connect_min_height = 5
+	air_connect_max_height = 10
+
 func _enter_tree() -> void:
 	animation_player.play("header")
 	player.height = HEIGHT_START
@@ -15,5 +19,5 @@ func _process(_delta: float) -> void:
 		transition_state(Player.State.RECOVERING)
 
 func on_ball_entered(connect_ball: Ball) -> void:
-	if connect_ball.can_air_connect():
+	if connect_ball.can_air_connect(air_connect_min_height, air_connect_max_height):
 		connect_ball.ball_shot(player.velocity.normalized() * player.power * BONUS_POWER)

@@ -5,6 +5,8 @@ extends CharacterBody2D
 @export var speed: float
 @export var power: float
 @export var ball: Ball
+@export var own_goal: Goal
+@export var target_goal: Goal
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var player_sprite: Sprite2D = $PlayerSprite
@@ -43,7 +45,7 @@ func switch_states(state: State, state_data: PlayerStateData = null) -> void:
 	if current_state != null:
 		current_state.queue_free()
 	current_state = state_factory.get_fresh_state(state)
-	current_state.setup(self, animation_player, state_data, ball, teammate_detection_area, ball_detection_area)
+	current_state.setup(self, animation_player, state_data, ball, teammate_detection_area, ball_detection_area, own_goal, target_goal)
 	current_state.state_transition_requested.connect(switch_states)
 	current_state.name = "PlayerStateMachine" + str(state)
 	call_deferred("add_child", current_state)
