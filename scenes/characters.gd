@@ -20,8 +20,8 @@ const CONTROL_SHEME_MAP: Dictionary = {
 	ControlScheme.P2: preload("res://assets/art/props/2p.png")
 }
 const BALL_CONTROL_HEIGHT_MAX := 10.0
-
 const GRAVITY := 8.0
+const COUNTRIES = ["DEFAULT", "FRANCE", "ARGENTINA", "BRAZIL", "ENGLAND", "GERMANY", "ITALY", "SPAIN", "USA", "CANADA"]
 
 enum ControlScheme {CPU, P1, P2}
 enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL}
@@ -36,10 +36,12 @@ var height_velocity := 0.0
 var full_name : String
 var role : Role
 var skin_color : SkinColor
+var country: String
 
 func _ready() -> void:
 	switch_states(State.MOVING)
 	set_control_texture()
+	set_shader_properies()
 
 func _process(delta: float) -> void:
 	flip_sprites()
@@ -47,7 +49,7 @@ func _process(delta: float) -> void:
 	process_gravity(delta)
 	move_and_slide()
 
-func initialize(context_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_resource: PlayerResource) -> void:
+func initialize(context_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_resource: PlayerResource, context_country: String) -> void:
 	position = context_position
 	ball = context_ball
 	own_goal = context_own_goal
@@ -57,7 +59,15 @@ func initialize(context_position: Vector2, context_ball: Ball, context_own_goal:
 	full_name = context_player_resource.full_name
 	role = context_player_resource.role
 	skin_color = context_player_resource.skin_color
+	country = context_country
 	heading = Vector2.LEFT if target_goal.position.x < position.x else Vector2.RIGHT
+
+func set_shader_properies() -> void:
+	var country_index := COUNTRIES.find(country)
+	country_index = clampi(country_index, 0, COUNTRIES.size() - 1)
+	player_sprite.material.set_shader_parameter("skin_color", skin_color)
+	player_sprite.material.set_shader_parameter("team_color", country_index)
+	print(skin_color, "--", country_index)
 
 func switch_states(state: State, state_data: PlayerStateData = null) -> void:
 	if current_state != null:
