@@ -25,12 +25,17 @@ const GRAVITY := 8.0
 
 enum ControlScheme {CPU, P1, P2}
 enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL}
+enum Role {GOALIE, DEFENSE, MIDFIELD, OFFENSE}
+enum SkinColor {LIGHT, MEDIUM, DARK}
 
 var heading := Vector2.RIGHT
 var state_factory := PlayerStateFactory.new()
 var current_state : PlayerState = null
 var height := 0.0
 var height_velocity := 0.0
+var full_name : String
+var role : Role
+var skin_color : SkinColor
 
 func _ready() -> void:
 	switch_states(State.MOVING)
@@ -41,6 +46,18 @@ func _process(delta: float) -> void:
 	set_sprite_visibility()
 	process_gravity(delta)
 	move_and_slide()
+
+func initialize(context_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_resource: PlayerResource) -> void:
+	position = context_position
+	ball = context_ball
+	own_goal = context_own_goal
+	target_goal = context_target_goal
+	speed = context_player_resource.speed
+	power = context_player_resource.power
+	full_name = context_player_resource.full_name
+	role = context_player_resource.role
+	skin_color = context_player_resource.skin_color
+	heading = Vector2.LEFT if target_goal.position.x < position.x else Vector2.RIGHT
 
 func switch_states(state: State, state_data: PlayerStateData = null) -> void:
 	if current_state != null:
