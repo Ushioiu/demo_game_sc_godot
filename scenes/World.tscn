@@ -140,4 +140,4 @@ rotation = -0.102974
 shape = SubResource("RectangleShape2D_h1bdy")
 
 [node name="Ball" parent="ActorsContainer" instance=ExtResource("5_1lgw5")]
-position = Vector2(425, 180)
+position = Vector2(374, 100)

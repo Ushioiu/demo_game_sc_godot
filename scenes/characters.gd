@@ -22,6 +22,7 @@ const CONTROL_SHEME_MAP: Dictionary = {
 const BALL_CONTROL_HEIGHT_MAX := 10.0
 const GRAVITY := 8.0
 const COUNTRIES = ["DEFAULT", "FRANCE", "ARGENTINA", "BRAZIL", "ENGLAND", "GERMANY", "ITALY", "SPAIN", "USA", "CANADA"]
+const WALK_ANIN_THRESHOLD := 0.6
 
 enum ControlScheme {CPU, P1, P2}
 enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL}
@@ -37,11 +38,16 @@ var full_name : String
 var role : Role
 var skin_color : SkinColor
 var country: String
+var ai_behavior := AIBehavior.new()
+var spawn_position := Vector2.ZERO
+var weight_on_duty_seteering := 0.0
 
 func _ready() -> void:
 	switch_states(State.MOVING)
 	set_control_texture()
 	set_shader_properies()
+	set_ai_behavior()
+	spawn_position = position
 
 func _process(delta: float) -> void:
 	flip_sprites()
@@ -67,22 +73,24 @@ func set_shader_properies() -> void:
 	country_index = clampi(country_index, 0, COUNTRIES.size() - 1)
 	player_sprite.material.set_shader_parameter("skin_color", skin_color)
 	player_sprite.material.set_shader_parameter("team_color", country_index)
-	print(skin_color, "--", country_index)
 
 func switch_states(state: State, state_data: PlayerStateData = null) -> void:
 	if current_state != null:
 		current_state.queue_free()
 	current_state = state_factory.get_fresh_state(state)
-	current_state.setup(self, animation_player, state_data, ball, teammate_detection_area, ball_detection_area, own_goal, target_goal)
+	current_state.setup(self, animation_player, state_data, ball, teammate_detection_area, ball_detection_area, own_goal, target_goal, ai_behavior)
 	current_state.state_transition_requested.connect(switch_states)
 	current_state.name = "PlayerStateMachine" + str(state)
 	call_deferred("add_child", current_state)
 
 func set_movement_animation() -> void:
-	if velocity.length() > 0:
-		animation_player.play("run")
-	else:
+	var vel_len = velocity.length()
+	if vel_len < 1:
 		animation_player.play("idle")
+	elif vel_len < WALK_ANIN_THRESHOLD * speed:
+		animation_player.play("walk")
+	else:
+		animation_player.play("run")
 
 func process_gravity(delta: float) -> void:
 	if height > 0:
@@ -121,3 +129,8 @@ func on_animation_complete() -> void:
 func control_ball() -> void:
 	if ball.height > BALL_CONTROL_HEIGHT_MAX:
 		switch_states(State.CHEST_CONTROL)
+
+func set_ai_behavior() -> void:
+	ai_behavior.set_up(ball, self)
+	ai_behavior.name = "AI Behavior"
+	add_child(ai_behavior)
