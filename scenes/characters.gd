@@ -134,3 +134,7 @@ func set_ai_behavior() -> void:
 	ai_behavior.set_up(ball, self)
 	ai_behavior.name = "AI Behavior"
 	add_child(ai_behavior)
+
+func is_facing_target_goal() -> bool:
+	var direction_to_target_goal := position.direction_to(target_goal.position)
+	return heading.dot(direction_to_target_goal) > 0
