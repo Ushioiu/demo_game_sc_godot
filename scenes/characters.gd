@@ -14,6 +14,7 @@ extends CharacterBody2D
 @onready var control_sprite: Sprite2D = $PlayerSprite/ControlSprite
 @onready var ball_detection_area: Area2D = $BallDetectionArea
 @onready var tackle_damage_emitter_area: Area2D = $TackleDamageEmitterArea
+@onready var opponent_detection_area: Area2D = $OpponentDetectionArea
 
 const CONTROL_SHEME_MAP: Dictionary = {
 	ControlScheme.CPU: preload("res://assets/art/props/cpu.png"),
@@ -113,9 +114,11 @@ func flip_sprites() -> void:
 	if heading == Vector2.RIGHT:
 		player_sprite.flip_h = false
 		tackle_damage_emitter_area.scale.x = 1
+		opponent_detection_area.scale.x = 1
 	elif heading == Vector2.LEFT:
 		player_sprite.flip_h = true
 		tackle_damage_emitter_area.scale.x = -1
+		opponent_detection_area.scale.x = -1
 
 func has_ball() -> bool:
 	return ball.carrier == self
@@ -135,7 +138,7 @@ func control_ball() -> void:
 		switch_states(State.CHEST_CONTROL)
 
 func set_ai_behavior() -> void:
-	ai_behavior.set_up(ball, self)
+	ai_behavior.set_up(ball, self, opponent_detection_area)
 	ai_behavior.name = "AI Behavior"
 	add_child(ai_behavior)
 

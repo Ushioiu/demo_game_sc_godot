@@ -7,17 +7,20 @@ const SHOT_DISTANCE := 150
 const SHOT_PROBABILITY := 0.3
 const TACKLE_DISTANCE := 15
 const TACKLE_PROBABILITY := 0.3
+const PASS_PROBABILITY := 0.5
 
-var ball : Ball = null
-var player : Player = null
-var time_since_last_ai_tick : int
+var ball: Ball = null
+var player: Player = null
+var time_since_last_ai_tick: int
+var opponent_detection_area: Area2D = null
 
 func _ready() -> void:
 	time_since_last_ai_tick = Time.get_ticks_msec() + randi_range(0, DURATION_AI_TICK_FREQUENCY)
 
-func set_up(context_ball : Ball, context_player : Player) -> void:
+func set_up(context_ball: Ball, context_player: Player, context_opponent_detection_area: Area2D) -> void:
 	ball = context_ball
 	player = context_player
+	opponent_detection_area = context_opponent_detection_area
 
 func process_ai() -> void:
 	if Time.get_ticks_msec() - time_since_last_ai_tick > DURATION_AI_TICK_FREQUENCY:
@@ -29,7 +32,7 @@ func preform_ai_movent() -> void:
 	var total_steering_force = Vector2.ZERO
 	if player.has_ball():
 		total_steering_force += get_carrier_steering_force()
-	elif player.role != Player.Role.GOALIE :
+	elif player.role != Player.Role.GOALIE:
 		total_steering_force += get_onduty_steering_force()
 		if is_ball_carried_by_teammate():
 			total_steering_force += get_assist_formation_steering()
@@ -46,6 +49,8 @@ func preform_ai_decisions() -> void:
 			var shot_direction := player.position.direction_to(player.target_goal.get_random_target_position())
 			var data := PlayerStateData.build().set_shot_power(player.power).set_shot_direction(shot_direction)
 			player.switch_states(Player.State.SHOOTING, data)
+		elif has_opponents_nearby() and randf() < PASS_PROBABILITY:
+			player.switch_states(Player.State.PASSING)
 
 func get_onduty_steering_force() -> Vector2:
 	return player.weight_on_duty_seteering * player.position.direction_to(ball.position)
@@ -71,9 +76,9 @@ func get_bicircular_weight(player_position: Vector2, center_target: Vector2, inn
 	elif distance_to_center < inner_circle_radius:
 		return inner_circle_weight
 	else:
-		var distance_to_inner_radius : float = distance_to_center - inner_circle_radius
+		var distance_to_inner_radius: float = distance_to_center - inner_circle_radius
 		var close_range_distance := outer_circle_radius - inner_circle_radius
-		return lerpf(inner_circle_weight, outer_circle_weight, distance_to_inner_radius/close_range_distance)
+		return lerpf(inner_circle_weight, outer_circle_weight, distance_to_inner_radius / close_range_distance)
 
 func is_ball_carried_by_teammate() -> bool:
 	return player != ball.carrier and ball.carrier != null and ball.carrier.country == player.country
@@ -84,3 +89,7 @@ func face_towards_target_goal() -> void:
 
 func is_ball_possessed_by_opponent() -> bool:
 	return ball.carrier != null and ball.carrier.country != player.country
+
+func has_opponents_nearby() -> bool:
+	var players := opponent_detection_area.get_overlapping_bodies()
+	return players.find_custom(func(p: Player): return p.country != player.country) > -1
