@@ -35,3 +35,6 @@ func transition_state(next_state: Player.State, next_state_data: PlayerStateData
 
 func on_animation_complete() -> void:
 	pass
+
+func can_carry_ball() -> bool:
+	return player.role != Player.Role.GOALIE

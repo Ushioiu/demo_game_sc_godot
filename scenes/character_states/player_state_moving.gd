@@ -20,13 +20,17 @@ func handle_human_movenment() -> void:
 			transition_state(Player.State.PASSING)
 		elif player.has_ball() and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
 			transition_state(Player.State.PREPPING_SHOT)
-	elif ball.can_air_interact() and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
-		if player.velocity == Vector2.ZERO:
-			if player.is_facing_target_goal():
-				transition_state(Player.State.VOLLEY_KICK)
+	elif KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
+		if ball.can_air_interact():
+			if player.velocity == Vector2.ZERO:
+				if player.is_facing_target_goal():
+					transition_state(Player.State.VOLLEY_KICK)
+				else:
+					transition_state(Player.State.BICYLE_KICK)
 			else:
-				transition_state(Player.State.BICYLE_KICK)
-		else:
-			transition_state(Player.State.HEADER)
-	elif player.velocity != Vector2.ZERO and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
+				transition_state(Player.State.HEADER)
+	if player.velocity != Vector2.ZERO and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
 		state_transition_requested.emit(Player.State.TACKLING)
+
+func can_carry_ball() -> bool:
+	return player.role != Player.Role.GOALIE
