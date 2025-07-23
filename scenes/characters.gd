@@ -13,6 +13,7 @@ extends CharacterBody2D
 @onready var teammate_detection_area: Area2D = $TeammateDetectionArea
 @onready var control_sprite: Sprite2D = $PlayerSprite/ControlSprite
 @onready var ball_detection_area: Area2D = $BallDetectionArea
+@onready var tackle_damage_emitter_area: Area2D = $TackleDamageEmitterArea
 
 const CONTROL_SHEME_MAP: Dictionary = {
 	ControlScheme.CPU: preload("res://assets/art/props/cpu.png"),
@@ -25,7 +26,7 @@ const COUNTRIES = ["DEFAULT", "FRANCE", "ARGENTINA", "BRAZIL", "ENGLAND", "GERMA
 const WALK_ANIN_THRESHOLD := 0.6
 
 enum ControlScheme {CPU, P1, P2}
-enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL}
+enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL, HURT}
 enum Role {GOALIE, DEFENSE, MIDFIELD, OFFENSE}
 enum SkinColor {LIGHT, MEDIUM, DARK}
 
@@ -48,6 +49,7 @@ func _ready() -> void:
 	set_shader_properies()
 	set_ai_behavior()
 	spawn_position = position
+	tackle_damage_emitter_area.body_entered.connect(on_tackle_player)
 
 func _process(delta: float) -> void:
 	flip_sprites()
@@ -78,7 +80,7 @@ func switch_states(state: State, state_data: PlayerStateData = null) -> void:
 	if current_state != null:
 		current_state.queue_free()
 	current_state = state_factory.get_fresh_state(state)
-	current_state.setup(self, animation_player, state_data, ball, teammate_detection_area, ball_detection_area, own_goal, target_goal, ai_behavior)
+	current_state.setup(self, animation_player, state_data, ball, teammate_detection_area, ball_detection_area, own_goal, target_goal, ai_behavior, tackle_damage_emitter_area)
 	current_state.state_transition_requested.connect(switch_states)
 	current_state.name = "PlayerStateMachine" + str(state)
 	call_deferred("add_child", current_state)
@@ -110,8 +112,10 @@ func flip_sprites() -> void:
 	#player_sprite.flip_h = true if heading == Vector2.LEFT else false
 	if heading == Vector2.RIGHT:
 		player_sprite.flip_h = false
+		tackle_damage_emitter_area.scale.x = 1
 	elif heading == Vector2.LEFT:
 		player_sprite.flip_h = true
+		tackle_damage_emitter_area.scale.x = -1
 
 func has_ball() -> bool:
 	return ball.carrier == self
@@ -138,3 +142,11 @@ func set_ai_behavior() -> void:
 func is_facing_target_goal() -> bool:
 	var direction_to_target_goal := position.direction_to(target_goal.position)
 	return heading.dot(direction_to_target_goal) > 0
+
+func on_tackle_player(tackle_player: Player) -> void:
+	if tackle_player != self and tackle_player == ball.carrier and tackle_player.country != country:
+		tackle_player.get_hurt(position.direction_to(tackle_player.position))
+
+func get_hurt(hurt_origin: Vector2) -> void:
+	var player_state_data := PlayerStateData.build().set_hurt_direction(hurt_origin)
+	switch_states(State.HURT, player_state_data)

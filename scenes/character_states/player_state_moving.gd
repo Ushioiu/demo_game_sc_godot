@@ -28,8 +28,5 @@ func handle_human_movenment() -> void:
 				transition_state(Player.State.BICYLE_KICK)
 		else:
 			transition_state(Player.State.HEADER)
-	# if player.velocity != Vector2.ZERO and \
-	# KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
-	# 	state_transition_requested.emit(Player.State.TACKLING)
-
-
+	elif player.velocity != Vector2.ZERO and KeyUtils.is_action_just_pressed(player.control_sheme, KeyUtils.Action.SHOOT):
+		state_transition_requested.emit(Player.State.TACKLING)

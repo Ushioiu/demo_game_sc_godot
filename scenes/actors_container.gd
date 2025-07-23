@@ -38,6 +38,7 @@ func spawn_players(team_home_country: String, own_home: Goal) -> Array[Player]:
 		# ! del-begin
 		if i ==4 && own_home == goal_home:
 			player.control_sheme = Player.ControlScheme.P1
+			player.speed = 130
 		# ! del-end
 		player_nodes.append(player)
 		add_child(player)
