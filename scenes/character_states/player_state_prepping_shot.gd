@@ -26,3 +26,6 @@ func _process(delta) -> void:
 								.set_shot_direction(shot_direction) \
 								.set_shot_power(shot_power)
 		transition_state(Player.State.SHOOTING, next_state_data)
+
+func can_pass() -> bool:
+	return true

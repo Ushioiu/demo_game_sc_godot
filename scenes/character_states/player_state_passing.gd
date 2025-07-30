@@ -5,7 +5,7 @@ func _enter_tree() -> void:
 	player.velocity = Vector2.ZERO
 
 func on_animation_complete() -> void:
-	var pass_target := find_teammate_in_view()
+	var pass_target : Player = find_teammate_in_view() if state_data == null or state_data.pass_target == null else state_data.pass_target
 	if pass_target == null:
 		ball.pass_to(ball.position + player.speed * player.heading)
 	else :

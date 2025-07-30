@@ -38,3 +38,6 @@ func on_animation_complete() -> void:
 
 func can_carry_ball() -> bool:
 	return player.role != Player.Role.GOALIE
+
+func can_pass() -> bool:
+	return false

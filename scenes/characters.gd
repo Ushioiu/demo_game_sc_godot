@@ -163,3 +163,7 @@ func get_hurt(hurt_origin: Vector2) -> void:
 
 func can_carry_ball() -> bool:
 	return current_state != null and current_state.can_carry_ball()
+
+func get_pass_request(player: Player) -> void:
+	if ball.carrier == self and current_state != null and current_state.can_pass():
+		switch_states(State.PASSING, PlayerStateData.build().set_pass_target(player))
