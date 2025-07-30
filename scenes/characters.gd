@@ -145,7 +145,7 @@ func control_ball() -> void:
 
 func set_ai_behavior() -> void:
 	current_ai_behavior = ai_factory.get_ai_behavior(role)
-	current_ai_behavior.set_up(ball, self, opponent_detection_area)
+	current_ai_behavior.set_up(ball, self, opponent_detection_area, teammate_detection_area)
 	current_ai_behavior.name = "AI Behavior"
 	add_child(current_ai_behavior)
 
