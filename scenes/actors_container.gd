@@ -47,6 +47,7 @@ func spawn_players(team_home_country: String, own_home: Goal) -> Array[Player]:
 func spawn_player(context_player_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_data: PlayerResource, context_country: String) -> Player:
 	var player: Player = PLAYER_PREFAB.instantiate()
 	player.initialize(context_player_position, context_ball, context_own_goal, context_target_goal, context_player_data, context_country)
+	player.swap_requested.connect(on_player_swap_request)
 	return player
 
 func set_on_duty_weight() -> void:
@@ -57,8 +58,25 @@ func set_on_duty_weight() -> void:
 		)
 		cpu_players.sort_custom(
 			func(p1: Player, p2: Player) -> bool:
-				#  TODO 使用实时位置比较好
 				return p1.spawn_position.distance_squared_to(ball.position) < p2.spawn_position.distance_squared_to(ball.position)
 		)
 		for i in range(cpu_players.size()):
 			cpu_players[i].weight_on_duty_seteering = 1 - ease(float(i)/10.0, 0.1)
+
+func on_player_swap_request(requester: Player) -> void:
+	var squad := squad_home if requester.country == squad_home[0].country else squad_away
+	var cpu_players : Array[Player] = squad.filter(
+		func(p: Player) -> bool:
+			return p.control_sheme == Player.ControlScheme.CPU and p.role != Player.Role.GOALIE
+	)
+	cpu_players.sort_custom(
+		func(p1: Player, p2: Player) -> bool:
+			return p1.position.distance_squared_to(ball.position) < p2.position.distance_squared_to(ball.position)
+	)
+	var closest_cpu_to_ball_player := cpu_players[0]
+	if closest_cpu_to_ball_player.position.distance_squared_to(ball.position) < requester.position.distance_squared_to(ball.position):
+		var player_control_sheme := requester.control_sheme
+		requester.control_sheme = Player.ControlScheme.CPU
+		requester.set_control_texture()
+		closest_cpu_to_ball_player.control_sheme = player_control_sheme
+		closest_cpu_to_ball_player.set_control_texture()

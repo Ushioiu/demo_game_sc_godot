@@ -18,6 +18,8 @@ extends CharacterBody2D
 @onready var permanent_damage_emit_area: Area2D = $PermanentDamageEmitArea
 @onready var goalie_hands_collider: CollisionShape2D = %GoalieHandsCollider
 
+signal swap_requested(player: Player)
+
 const CONTROL_SHEME_MAP: Dictionary = {
 	ControlScheme.CPU: preload("res://assets/art/props/cpu.png"),
 	ControlScheme.P1: preload("res://assets/art/props/1p.png"),

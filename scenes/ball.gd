@@ -12,6 +12,8 @@ extends AnimatableBody2D
 const BOUNCINESS := 0.8
 const DISTANCE_HEIGHT_PASS := 130
 const TUMBLE_HEIGHT_VELOCITY := 3.0
+const DURATION_TUMBLE_LOCK := 200
+const DURATION_PASS_LOCK := 500
 
 enum State {CARRIED, FREEFORM, SHOT}
 
@@ -29,11 +31,11 @@ func _process(_delta: float) -> void:
 	ball_sprite.position = Vector2.UP * height
 	scoring_ray_cast.rotation = velocity.angle()
 
-func switch_state(state: Ball.State) -> void:
+func switch_state(state: Ball.State, state_data: BallStateData = BallStateData.new()) -> void:
 	if current_state != null:
 		current_state.queue_free()
 	current_state = state_factory.get_fresh_state(state)
-	current_state.setup(self, player_detection_area, carrier, animation_player, ball_sprite)
+	current_state.setup(self, player_detection_area, carrier, animation_player, ball_sprite, state_data)
 	current_state.state_transition_requested.connect(switch_state)
 	current_state.name = "BallStateMachine" + str(state)
 	call_deferred("add_child", current_state)
@@ -47,7 +49,7 @@ func tumble(tumble_velocity: Vector2) -> void:
 	velocity = tumble_velocity
 	carrier = null
 	height_velocity = TUMBLE_HEIGHT_VELOCITY
-	switch_state(State.FREEFORM)
+	switch_state(State.FREEFORM, BallStateData.build().set_lock_duration(DURATION_TUMBLE_LOCK))
 
 func pass_to(direction_to: Vector2) -> void:
 	var pass_direction := self.position.direction_to(direction_to)
@@ -57,7 +59,7 @@ func pass_to(direction_to: Vector2) -> void:
 	if pass_distance > DISTANCE_HEIGHT_PASS:
 		height_velocity = BallState.GRAVITY * pass_distance / (2 * pass_velocity)
 	carrier = null
-	switch_state(State.FREEFORM)
+	switch_state(State.FREEFORM, BallStateData.build().set_lock_duration(DURATION_PASS_LOCK))
 
 func stop() -> void:
 	velocity = Vector2.ZERO

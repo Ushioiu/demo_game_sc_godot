@@ -15,7 +15,7 @@ func _process(delta: float) -> void:
 	# TODO wait for update
 	# !当时间刚好过了，又碰上角色那么直接落地
 	if Time.get_ticks_msec() - time_since_shot > DURATION_SHOT:
-		state_transition_requested.emit(Ball.State.FREEFORM)
+		transition_state(Ball.State.FREEFORM)
 	else :
 		move_and_bounce(delta)
 
