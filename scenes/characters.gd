@@ -31,7 +31,8 @@ const COUNTRIES = ["DEFAULT", "FRANCE", "ARGENTINA", "BRAZIL", "ENGLAND", "GERMA
 const WALK_ANIN_THRESHOLD := 0.6
 
 enum ControlScheme {CPU, P1, P2}
-enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, CHEST_CONTROL, HURT, DIVING}
+enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, \
+			CHEST_CONTROL, HURT, DIVING, CELEBRATING, MOURNING}
 enum Role {GOALIE, DEFENSE, MIDFIELD, OFFENSE}
 enum SkinColor {LIGHT, MEDIUM, DARK}
 
@@ -59,6 +60,7 @@ func _ready() -> void:
 	goalie_hands_collider.disabled = role != Role.GOALIE
 	tackle_damage_emitter_area.body_entered.connect(on_tackle_player)
 	permanent_damage_emit_area.body_entered.connect(on_tackle_player)
+	GameEvents.team_scored.connect(on_team_scored)
 
 func _process(delta: float) -> void:
 	flip_sprites()
@@ -169,3 +171,9 @@ func can_carry_ball() -> bool:
 func get_pass_request(player: Player) -> void:
 	if ball.carrier == self and current_state != null and current_state.can_pass():
 		switch_states(State.PASSING, PlayerStateData.build().set_pass_target(player))
+
+func on_team_scored(scored_country: String) -> void:
+	if country == scored_country:
+		switch_states(State.MOURNING)
+	else:
+		switch_states(State.CELEBRATING)

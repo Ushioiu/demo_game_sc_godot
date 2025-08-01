@@ -18,8 +18,10 @@ var time_since_last_cache_refresh := Time.get_ticks_msec()
 
 func _ready() -> void:
 	squad_home = spawn_players(team_home, goal_home)
+	goal_home.country = team_home
 	spawns.scale.x = -1
 	squad_away = spawn_players(team_away, goal_away)
+	goal_away.country = team_away
 
 func _process(_delta: float) -> void:
 	if Time.get_ticks_msec() - time_since_last_cache_refresh > DURATION_WEIGHT_CACHE:
