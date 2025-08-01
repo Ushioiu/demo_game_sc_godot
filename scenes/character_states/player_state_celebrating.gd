@@ -15,5 +15,3 @@ func celebrate() -> void:
 	animation_player.play("celebrate")
 	player.height = 0.1
 	player.height_velocity = CELEBRTAING_HEIGHT
-
-
