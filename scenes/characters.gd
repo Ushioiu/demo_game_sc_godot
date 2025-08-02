@@ -32,7 +32,7 @@ const WALK_ANIN_THRESHOLD := 0.6
 
 enum ControlScheme {CPU, P1, P2}
 enum State {MOVING, TACKLING, RECOVERING, PREPPING_SHOT, SHOOTING, PASSING, HEADER, VOLLEY_KICK, BICYLE_KICK, \
-			CHEST_CONTROL, HURT, DIVING, CELEBRATING, MOURNING}
+			CHEST_CONTROL, HURT, DIVING, CELEBRATING, MOURNING, RESETTING}
 enum Role {GOALIE, DEFENSE, MIDFIELD, OFFENSE}
 enum SkinColor {LIGHT, MEDIUM, DARK}
 
@@ -48,11 +48,11 @@ var role : Role
 var skin_color : SkinColor
 var country: String
 var spawn_position := Vector2.ZERO
+var kickoff_position := Vector2.ZERO
 var weight_on_duty_seteering := 0.0
 
 func _ready() -> void:
 	set_ai_behavior()
-	switch_states(State.MOVING)
 	set_control_texture()
 	set_shader_properies()
 	spawn_position = position
@@ -61,6 +61,8 @@ func _ready() -> void:
 	tackle_damage_emitter_area.body_entered.connect(on_tackle_player)
 	permanent_damage_emit_area.body_entered.connect(on_tackle_player)
 	GameEvents.team_scored.connect(on_team_scored)
+	var initial_position := kickoff_position if country == GameManager.countries[0] else spawn_position
+	switch_states(State.RESETTING, PlayerStateData.build().set_reset_position(initial_position))
 
 func _process(delta: float) -> void:
 	flip_sprites()
@@ -68,8 +70,9 @@ func _process(delta: float) -> void:
 	process_gravity(delta)
 	move_and_slide()
 
-func initialize(context_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_resource: PlayerResource, context_country: String) -> void:
+func initialize(context_position: Vector2, context_kickoff_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_resource: PlayerResource, context_country: String) -> void:
 	position = context_position
+	kickoff_position = context_kickoff_position
 	ball = context_ball
 	own_goal = context_own_goal
 	target_goal = context_target_goal
@@ -80,6 +83,7 @@ func initialize(context_position: Vector2, context_ball: Ball, context_own_goal:
 	skin_color = context_player_resource.skin_color
 	country = context_country
 	heading = Vector2.LEFT if target_goal.position.x < position.x else Vector2.RIGHT
+	# add_to_group("players")
 
 func set_shader_properies() -> void:
 	var country_index := COUNTRIES.find(country)
@@ -133,6 +137,9 @@ func flip_sprites() -> void:
 func has_ball() -> bool:
 	return ball.carrier == self
 
+func is_ready_for_kickoff() -> bool:
+	return current_state != null and current_state.is_ready_for_kickoff()
+
 func set_control_texture() -> void:
 	control_sprite.texture = CONTROL_SHEME_MAP[control_sheme]
 
@@ -146,6 +153,10 @@ func on_animation_complete() -> void:
 func control_ball() -> void:
 	if ball.height > BALL_CONTROL_HEIGHT_MAX:
 		switch_states(State.CHEST_CONTROL)
+
+func set_control_sheme(sheme: ControlScheme) -> void:
+	control_sheme = sheme
+	set_control_texture()
 
 func set_ai_behavior() -> void:
 	current_ai_behavior = ai_factory.get_ai_behavior(role)
@@ -171,6 +182,10 @@ func can_carry_ball() -> bool:
 func get_pass_request(player: Player) -> void:
 	if ball.carrier == self and current_state != null and current_state.can_pass():
 		switch_states(State.PASSING, PlayerStateData.build().set_pass_target(player))
+
+func face_towards_target_goal() -> void:
+	if not is_facing_target_goal():
+		heading *= -1
 
 func on_team_scored(scored_country: String) -> void:
 	if country == scored_country:

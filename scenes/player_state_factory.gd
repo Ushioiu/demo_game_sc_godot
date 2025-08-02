@@ -15,6 +15,7 @@ var states: Dictionary = {
 	Player.State.DIVING: PlayerStateDiving,
 	Player.State.CELEBRATING: PlayerStateCelebrating,
 	Player.State.MOURNING: PlayerStateMourning,
+	Player.State.RESETTING: PlayerStateReset,
 }
 
 func get_fresh_state(state: Player.State) -> PlayerState:

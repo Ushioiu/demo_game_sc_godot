@@ -52,6 +52,16 @@ ball = NodePath("Ball")
 goal_home = NodePath("PitchObjects/GoalHome")
 goal_away = NodePath("PitchObjects/GoalAway")
 
+[node name="KickOffs" type="Node2D" parent="ActorsContainer"]
+unique_name_in_owner = true
+position = Vector2(425, 180)
+
+[node name="KickOffPosition" type="Node2D" parent="ActorsContainer/KickOffs"]
+position = Vector2(-10, 0)
+
+[node name="KickOffPosition2" type="Node2D" parent="ActorsContainer/KickOffs"]
+position = Vector2(-5, 30)
+
 [node name="Spawns" type="Node2D" parent="ActorsContainer"]
 position = Vector2(425, 180)
 
@@ -138,4 +148,4 @@ rotation = -0.102974
 shape = SubResource("RectangleShape2D_h1bdy")
 
 [node name="Ball" parent="ActorsContainer" instance=ExtResource("5_1lgw5")]
-position = Vector2(425, 102)
+position = Vector2(425, 180)

@@ -28,7 +28,7 @@ func preform_ai_decisions() -> void:
 	if player == ball.carrier:
 		var target := player.target_goal.get_center_target_position()
 		if player.position.distance_to(target) < SHOT_DISTANCE and randf() < SHOT_PROBABILITY:
-			face_towards_target_goal()
+			player.face_towards_target_goal()
 			var shot_direction := player.position.direction_to(player.target_goal.get_random_target_position())
 			var data := PlayerStateData.build().set_shot_power(player.power).set_shot_direction(shot_direction)
 			player.switch_states(Player.State.SHOOTING, data)

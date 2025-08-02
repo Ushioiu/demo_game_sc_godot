@@ -46,10 +46,6 @@ func get_bicircular_weight(player_position: Vector2, center_target: Vector2, inn
 func is_ball_carried_by_teammate() -> bool:
 	return player != ball.carrier and ball.carrier != null and ball.carrier.country == player.country
 
-func face_towards_target_goal() -> void:
-	if not player.is_facing_target_goal():
-		player.heading *= -1
-
 func is_ball_possessed_by_opponent() -> bool:
 	return ball.carrier != null and ball.carrier.country != player.country
 

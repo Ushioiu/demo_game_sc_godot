@@ -14,6 +14,7 @@ const DISTANCE_HEIGHT_PASS := 130
 const TUMBLE_HEIGHT_VELOCITY := 3.0
 const DURATION_TUMBLE_LOCK := 200
 const DURATION_PASS_LOCK := 500
+const KICKOFF_PASS_DISTANCE := 30.0
 
 enum State {CARRIED, FREEFORM, SHOT}
 
@@ -23,9 +24,13 @@ var state_factory := BallStateFactory.new()
 var velocity := Vector2.ZERO
 var height := 0.0
 var height_velocity := 0.0
+var spawn_position := Vector2.ZERO
 
 func _ready():
 	switch_state(State.FREEFORM)
+	spawn_position = position
+	GameEvents.team_rest.connect(on_team_rest)
+	GameEvents.kickoff_started.connect(on_kickoff_started)
 
 func _process(_delta: float) -> void:
 	ball_sprite.position = Vector2.UP * height
@@ -51,7 +56,7 @@ func tumble(tumble_velocity: Vector2) -> void:
 	height_velocity = TUMBLE_HEIGHT_VELOCITY
 	switch_state(State.FREEFORM, BallStateData.build().set_lock_duration(DURATION_TUMBLE_LOCK))
 
-func pass_to(direction_to: Vector2) -> void:
+func pass_to(direction_to: Vector2, lock_duration: int = DURATION_PASS_LOCK) -> void:
 	var pass_direction := self.position.direction_to(direction_to)
 	var pass_distance := self.position.distance_to(direction_to)
 	var pass_velocity := sqrt(2 * pass_distance * friction_ground)
@@ -59,7 +64,7 @@ func pass_to(direction_to: Vector2) -> void:
 	if pass_distance > DISTANCE_HEIGHT_PASS:
 		height_velocity = BallState.GRAVITY * pass_distance / (2 * pass_velocity)
 	carrier = null
-	switch_state(State.FREEFORM, BallStateData.build().set_lock_duration(DURATION_PASS_LOCK))
+	switch_state(State.FREEFORM, BallStateData.build().set_lock_duration(lock_duration))
 
 func stop() -> void:
 	velocity = Vector2.ZERO
@@ -77,3 +82,11 @@ func is_headed_for_scoring_area(scoring_area: Area2D) -> bool:
 	if not scoring_ray_cast.is_colliding():
 		return false
 	return scoring_ray_cast.get_collider() == scoring_area
+
+func on_team_rest() -> void:
+	position = spawn_position
+	velocity = Vector2.ZERO
+	switch_state(State.FREEFORM)
+
+func on_kickoff_started() -> void:
+	pass_to(spawn_position + Vector2.DOWN * KICKOFF_PASS_DISTANCE, 0)

@@ -8,23 +8,32 @@ const PLAYER_PREFAB := preload("res://scenes/characters.tscn")
 @export var goal_home: Goal
 @export var goal_away: Goal
 
+@onready var kickoffs: Node2D = %KickOffs
 @onready var spawns: Node2D = $Spawns
 
 var squad_home : Array[Player] = []
 var squad_away : Array[Player] = []
 var time_since_last_cache_refresh := Time.get_ticks_msec()
+var is_checking_for_kickoff_readiness := false 
+
+func _init() -> void:
+	GameEvents.team_rest.connect(on_team_rest)
 
 func _ready() -> void:
 	squad_home = spawn_players(GameManager.countries[0], goal_home)
 	goal_home.country = GameManager.countries[0]
 	spawns.scale.x = -1
+	kickoffs.scale.x = -1
 	squad_away = spawn_players(GameManager.countries[1], goal_away)
 	goal_away.country = GameManager.countries[1]
+	setup_control_shemes()
 
 func _process(_delta: float) -> void:
 	if Time.get_ticks_msec() - time_since_last_cache_refresh > DURATION_WEIGHT_CACHE:
 		time_since_last_cache_refresh = Time.get_ticks_msec()
 		set_on_duty_weight()
+	if is_checking_for_kickoff_readiness:
+		check_for_kickoff_readiness()
 
 func spawn_players(team_home_country: String, own_home: Goal) -> Array[Player]:
 	var player_nodes: Array[Player] = []
@@ -32,21 +41,18 @@ func spawn_players(team_home_country: String, own_home: Goal) -> Array[Player]:
 	var target_goal := goal_home if own_home == goal_away else goal_away
 	for i in players.size():
 		var player_position := spawns.get_child(i).global_position as Vector2
-		var player := spawn_player(player_position, ball, own_home, target_goal, players[i] as PlayerResource, team_home_country)
+		var kickoff_position := player_position
+		if i > 3:
+			kickoff_position = kickoffs.get_child(i - 4).global_position as Vector2
+		var player := spawn_player(player_position, kickoff_position, ball, own_home, target_goal, players[i] as PlayerResource, team_home_country)
 		player.name = "Player_" + player.country + "_" + player.full_name
-		#  TODO 临时设置控制的角色
-		# ! del-begin
-		if i ==4 && own_home == goal_home:
-			player.control_sheme = Player.ControlScheme.P1
-			player.speed = 130
-		# ! del-end
 		player_nodes.append(player)
 		add_child(player)
 	return player_nodes
 
-func spawn_player(context_player_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_data: PlayerResource, context_country: String) -> Player:
+func spawn_player(context_player_position: Vector2, context_kickoff_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_data: PlayerResource, context_country: String) -> Player:
 	var player: Player = PLAYER_PREFAB.instantiate()
-	player.initialize(context_player_position, context_ball, context_own_goal, context_target_goal, context_player_data, context_country)
+	player.initialize(context_player_position, context_kickoff_position, context_ball, context_own_goal, context_target_goal, context_player_data, context_country)
 	player.swap_requested.connect(on_player_swap_request)
 	return player
 
@@ -76,7 +82,32 @@ func on_player_swap_request(requester: Player) -> void:
 	var closest_cpu_to_ball_player := cpu_players[0]
 	if closest_cpu_to_ball_player.position.distance_squared_to(ball.position) < requester.position.distance_squared_to(ball.position):
 		var player_control_sheme := requester.control_sheme
-		requester.control_sheme = Player.ControlScheme.CPU
-		requester.set_control_texture()
-		closest_cpu_to_ball_player.control_sheme = player_control_sheme
-		closest_cpu_to_ball_player.set_control_texture()
+		requester.set_control_sheme(Player.ControlScheme.CPU)
+		closest_cpu_to_ball_player.set_control_sheme(player_control_sheme)
+
+func check_for_kickoff_readiness() -> void:
+	for squad in [squad_home, squad_away]:
+		for player: Player in squad:
+			if not player.is_ready_for_kickoff():
+				return
+	is_checking_for_kickoff_readiness = false
+	GameEvents.kickoff_ready.emit()
+	setup_control_shemes()
+
+func on_team_rest() -> void:
+	is_checking_for_kickoff_readiness = true
+
+func setup_control_shemes() -> void:
+	var p1_country := GameManager.player_setup[0]
+	if GameManager.is_coop():
+		var player_squad := squad_home if p1_country == squad_home[0].country else squad_away
+		player_squad[4].set_control_sheme(Player.ControlScheme.P1)
+		player_squad[5].set_control_sheme(Player.ControlScheme.P2)
+	elif GameManager.is_single_player():
+		var player_squad := squad_home if p1_country == squad_home[0].country else squad_away
+		player_squad[5].set_control_sheme(Player.ControlScheme.P1)
+	else :
+		var p1_squad := squad_home if p1_country == squad_home[0].country else squad_away
+		var p2_squad := squad_home if p1_squad == squad_away else squad_away
+		p1_squad[5].set_control_sheme(Player.ControlScheme.P1)
+		p2_squad[5].set_control_sheme(Player.ControlScheme.P2)
