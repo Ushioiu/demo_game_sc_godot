@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b4fmreod8s4gw"]
+[gd_scene load_steps=14 format=3 uid="uid://b4fmreod8s4gw"]
 
 [ext_resource type="Script" uid="uid://bpst4fjnj8nxb" path="res://scenes/camera_2d.gd" id="1_hlk0d"]
 [ext_resource type="Texture2D" uid="uid://cp8l5oj5pym3l" path="res://assets/art/backgrounds/pitch-background.png" id="1_k0juu"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://d204f230dvhp6" path="res://assets/art/backgrounds/top-wall.png" id="6_b3faq"]
 [ext_resource type="Texture2D" uid="uid://mpjyvf2u6bup" path="res://assets/art/backgrounds/bottom-wall.png" id="7_ygioq"]
 [ext_resource type="Texture2D" uid="uid://df7p4qivetv4r" path="res://assets/art/backgrounds/side-wall.png" id="8_pdh0q"]
+[ext_resource type="PackedScene" uid="uid://cakno4thxy4v0" path="res://scenes/ui/ui.tscn" id="11_h1bdy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pdh0q"]
 size = Vector2(800, 7)
@@ -149,3 +150,5 @@ shape = SubResource("RectangleShape2D_h1bdy")
 
 [node name="Ball" parent="ActorsContainer" instance=ExtResource("5_1lgw5")]
 position = Vector2(425, 180)
+
+[node name="UI" parent="." instance=ExtResource("11_h1bdy")]

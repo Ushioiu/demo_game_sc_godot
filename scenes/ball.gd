@@ -5,6 +5,7 @@ extends AnimatableBody2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var ball_sprite: Sprite2D = $BallSprite
 @onready var scoring_ray_cast: RayCast2D = $ScoringRayCast
+@onready var collision_shape_2d: CollisionShape2D = $PlayerDetectionArea/CollisionShape2D
 
 @export var friction_air: float
 @export var friction_ground: float
@@ -30,6 +31,7 @@ func _ready():
 	switch_state(State.FREEFORM)
 	spawn_position = position
 	GameEvents.team_rest.connect(on_team_rest)
+	GameEvents.kickoff_ready.connect(on_kickoff_ready)
 	GameEvents.kickoff_started.connect(on_kickoff_started)
 
 func _process(_delta: float) -> void:
@@ -87,6 +89,10 @@ func on_team_rest() -> void:
 	position = spawn_position
 	velocity = Vector2.ZERO
 	switch_state(State.FREEFORM)
+	collision_shape_2d.disabled = true
+
+func on_kickoff_ready() -> void:
+	collision_shape_2d.disabled = false
 
 func on_kickoff_started() -> void:
 	pass_to(spawn_position + Vector2.DOWN * KICKOFF_PASS_DISTANCE, 0)
