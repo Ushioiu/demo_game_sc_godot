@@ -98,6 +98,7 @@ func on_team_rest() -> void:
 	is_checking_for_kickoff_readiness = true
 
 func setup_control_shemes() -> void:
+	reset_control_shemes()
 	var p1_country := GameManager.player_setup[0]
 	if GameManager.is_coop():
 		var player_squad := squad_home if p1_country == squad_home[0].country else squad_away
@@ -111,3 +112,8 @@ func setup_control_shemes() -> void:
 		var p2_squad := squad_home if p1_squad == squad_away else squad_away
 		p1_squad[5].set_control_sheme(Player.ControlScheme.P1)
 		p2_squad[5].set_control_sheme(Player.ControlScheme.P2)
+
+func reset_control_shemes() -> void:
+	for squad in [squad_home, squad_away]:
+		for player: Player in squad:
+			player.set_control_sheme(Player.ControlScheme.CPU)
