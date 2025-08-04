@@ -6,6 +6,8 @@ extends AnimatableBody2D
 @onready var ball_sprite: Sprite2D = $BallSprite
 @onready var scoring_ray_cast: RayCast2D = $ScoringRayCast
 @onready var collision_shape_2d: CollisionShape2D = $PlayerDetectionArea/CollisionShape2D
+@onready var shot_particles: GPUParticles2D = %ShotParticles
+@onready var player_proximity_area: Area2D = %PlayerProximityArea
 
 @export var friction_air: float
 @export var friction_ground: float
@@ -42,7 +44,7 @@ func switch_state(state: Ball.State, state_data: BallStateData = BallStateData.n
 	if current_state != null:
 		current_state.queue_free()
 	current_state = state_factory.get_fresh_state(state)
-	current_state.setup(self, player_detection_area, carrier, animation_player, ball_sprite, state_data)
+	current_state.setup(self, player_detection_area, carrier, animation_player, ball_sprite, state_data, shot_particles)
 	current_state.state_transition_requested.connect(switch_state)
 	current_state.name = "BallStateMachine" + str(state)
 	call_deferred("add_child", current_state)
@@ -96,3 +98,7 @@ func on_kickoff_ready() -> void:
 
 func on_kickoff_started() -> void:
 	pass_to(spawn_position + Vector2.DOWN * KICKOFF_PASS_DISTANCE, 0)
+
+func get_proximity_teammate_count(country: String) -> int:
+	var players := player_proximity_area.get_overlapping_bodies()
+	return players.filter(func(p: Player) -> bool : return p.country == country).size()

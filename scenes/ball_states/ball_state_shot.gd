@@ -10,6 +10,8 @@ func _enter_tree() -> void:
 	set_ball_animation_from_velocity()
 	sprite.scale.y = SHOT_SPRITE_SCALE
 	ball.height = SHOT_HEIGHT
+	shot_particles.emitting = true
+	GameEvents.impact_received.emit(ball.position, true)
 
 func _process(delta: float) -> void:
 	# TODO wait for update
@@ -21,3 +23,4 @@ func _process(delta: float) -> void:
 
 func _exit_tree() -> void:
 	sprite.scale.y = 1.0
+	shot_particles.emitting = false

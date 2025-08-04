@@ -8,3 +8,4 @@ signal ball_possessed(player_name: String)
 signal ball_released
 signal score_changed
 signal game_over(country_winner: String)
+signal impact_received(impact_position: Vector2, is_height_impact: bool)

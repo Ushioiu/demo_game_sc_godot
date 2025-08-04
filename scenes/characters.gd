@@ -17,6 +17,8 @@ extends CharacterBody2D
 @onready var opponent_detection_area: Area2D = $OpponentDetectionArea
 @onready var permanent_damage_emit_area: Area2D = $PermanentDamageEmitArea
 @onready var goalie_hands_collider: CollisionShape2D = %GoalieHandsCollider
+@onready var root_patticles: Node2D = %RootParticles
+@onready var run_particles: GPUParticles2D = %RunParticles
 
 signal swap_requested(player: Player)
 
@@ -130,10 +132,12 @@ func flip_sprites() -> void:
 		player_sprite.flip_h = false
 		tackle_damage_emitter_area.scale.x = 1
 		opponent_detection_area.scale.x = 1
+		root_patticles.scale.x = 1
 	elif heading == Vector2.LEFT:
 		player_sprite.flip_h = true
 		tackle_damage_emitter_area.scale.x = -1
 		opponent_detection_area.scale.x = -1
+		root_patticles.scale.x = -1
 
 func has_ball() -> bool:
 	return ball.carrier == self
@@ -146,6 +150,7 @@ func set_control_texture() -> void:
 
 func set_sprite_visibility() -> void:
 	control_sprite.visible = control_sheme != ControlScheme.CPU or has_ball()
+	run_particles.emitting = velocity.length() == speed
 
 func on_animation_complete() -> void:
 	if current_state != null:

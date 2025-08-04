@@ -19,6 +19,7 @@ func preform_ai_movent() -> void:
 			total_steering_force += get_spwan_steering_force()
 		elif ball.carrier == null:
 			total_steering_force += get_ball_proximity_steering_force()
+			total_steering_force += get_density_around_ball_steering_force()
 	total_steering_force = total_steering_force.limit_length(1.0)
 	player.velocity = player.speed * total_steering_force
 
@@ -67,3 +68,11 @@ func has_teammate_in_view() -> bool:
 		func(p: Player) -> bool:
 			return p != player and player.country == p.country
 	) > -1
+
+func get_density_around_ball_steering_force() -> Vector2:
+	var nb_teammates_near_ball := ball.get_proximity_teammate_count(player.country)
+	if nb_teammates_near_ball == 0:
+		return Vector2.ZERO
+	var weight := 1 - 1.0 / nb_teammates_near_ball
+	var direction := ball.position.direction_to(player.position)
+	return weight * direction

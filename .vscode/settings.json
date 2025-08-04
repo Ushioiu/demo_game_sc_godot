@@ -7,7 +7,8 @@
         "[GDScript]": {
             "editor.selectionBackground": "#19cd2b91",
             "editorCursor.foreground": "#ff6f00",
-            "tab.activeBorderTop": "#ff6f00"
+            "tab.activeBorderTop": "#ff6f00",
+            "editorLineNumber.activeForeground": "#e96891"
         }
     }
 }

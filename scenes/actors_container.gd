@@ -3,6 +3,7 @@ extends Node2D
 
 const DURATION_WEIGHT_CACHE := 200
 const PLAYER_PREFAB := preload("res://scenes/characters.tscn")
+const SPARK_PREFAB := preload("res://scenes/spark/spark.tscn")
 
 @export var ball: Ball
 @export var goal_home: Goal
@@ -18,6 +19,7 @@ var is_checking_for_kickoff_readiness := false
 
 func _init() -> void:
 	GameEvents.team_rest.connect(on_team_rest)
+	GameEvents.impact_received.connect(on_impact_received)
 
 func _ready() -> void:
 	squad_home = spawn_players(GameManager.countries[0], goal_home)
@@ -117,3 +119,8 @@ func reset_control_shemes() -> void:
 	for squad in [squad_home, squad_away]:
 		for player: Player in squad:
 			player.set_control_sheme(Player.ControlScheme.CPU)
+
+func on_impact_received(impact_position: Vector2, _is_height_impact: bool) -> void:
+	var spark = SPARK_PREFAB.instantiate()
+	spark.position = impact_position
+	add_child(spark)

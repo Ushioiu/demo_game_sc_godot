@@ -1,8 +1,26 @@
-[gd_scene load_steps=10 format=3 uid="uid://cprc1p73gu4sb"]
+[gd_scene load_steps=15 format=3 uid="uid://cprc1p73gu4sb"]
 
 [ext_resource type="Texture2D" uid="uid://cw15oo8uq4c75" path="res://assets/art/props/soccer-ball.png" id="1_7s4qf"]
 [ext_resource type="Script" uid="uid://ci5ju4jkfklbn" path="res://scenes/ball.gd" id="1_f7cbr"]
+[ext_resource type="Texture2D" uid="uid://mgdkfoat565a" path="res://assets/art/particles/white-circle.png" id="2_4dx81"]
 [ext_resource type="Texture2D" uid="uid://bf4e8kn6hrid1" path="res://assets/art/props/ball-shadow.png" id="2_cxlvu"]
+
+[sub_resource type="Curve" id="Curve_4dx81"]
+_data = [Vector2(0, 0.272031), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_eew57"]
+curve = SubResource("Curve_4dx81")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eew57"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 1.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.2
+scale_max = 0.4
+scale_curve = SubResource("CurveTexture_eew57")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7s4qf"]
 radius = 5.0
@@ -68,6 +86,9 @@ _data = {
 [sub_resource type="CircleShape2D" id="CircleShape2D_cxlvu"]
 radius = 4.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_4dx81"]
+radius = 60.0
+
 [node name="Ball" type="AnimatableBody2D"]
 collision_layer = 4
 collision_mask = 33
@@ -75,6 +96,15 @@ sync_to_physics = false
 script = ExtResource("1_f7cbr")
 friction_air = 35.0
 friction_ground = 250.0
+
+[node name="ShotParticles" type="GPUParticles2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+emitting = false
+amount = 30
+texture = ExtResource("2_4dx81")
+lifetime = 0.3
+process_material = SubResource("ParticleProcessMaterial_eew57")
 
 [node name="BallSprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_7s4qf")
@@ -112,3 +142,13 @@ target_position = Vector2(80, 0)
 collision_mask = 16
 collide_with_areas = true
 collide_with_bodies = false
+
+[node name="PlayerProximityArea" type="Area2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -5)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerProximityArea"]
+shape = SubResource("CircleShape2D_4dx81")
+debug_color = Color(0.263497, 0.620247, 0.378177, 0.42)
