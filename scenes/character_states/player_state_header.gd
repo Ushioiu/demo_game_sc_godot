@@ -20,4 +20,5 @@ func _process(_delta: float) -> void:
 
 func on_ball_entered(connect_ball: Ball) -> void:
 	if connect_ball.can_air_connect(air_connect_min_height, air_connect_max_height):
+		SoundPlayer.play(SoundPlayer.Sound.POWERSHOT)
 		connect_ball.ball_shot(player.velocity.normalized() * player.power * BONUS_POWER)

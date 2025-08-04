@@ -14,6 +14,7 @@ func on_ball_entered(connect_ball: Ball) -> void:
 	if connect_ball.can_air_connect(air_connect_min_height, air_connect_max_height):
 		var target_position := target_goal.get_random_target_position()
 		var direction := player.position.direction_to(target_position)
+		SoundPlayer.play(SoundPlayer.Sound.POWERSHOT)
 		connect_ball.ball_shot(direction * player.power * BICYCLE_KICK_POWER)
 
 func on_animation_complete() -> void:
