@@ -29,7 +29,6 @@ const CONTROL_SHEME_MAP: Dictionary = {
 }
 const BALL_CONTROL_HEIGHT_MAX := 10.0
 const GRAVITY := 8.0
-const COUNTRIES = ["DEFAULT", "FRANCE", "ARGENTINA", "BRAZIL", "ENGLAND", "GERMANY", "ITALY", "SPAIN", "USA", "CANADA"]
 const WALK_ANIN_THRESHOLD := 0.6
 
 enum ControlScheme {CPU, P1, P2}
@@ -89,8 +88,9 @@ func initialize(context_position: Vector2, context_kickoff_position: Vector2, co
 	# add_to_group("players")
 
 func set_shader_properies() -> void:
-	var country_index := COUNTRIES.find(country)
-	country_index = clampi(country_index, 0, COUNTRIES.size() - 1)
+	var countries := DataLoader.get_countries()
+	var country_index := countries.find(country)
+	country_index = clampi(country_index, 0, countries.size() - 1)
 	player_sprite.material.set_shader_parameter("skin_color", skin_color)
 	player_sprite.material.set_shader_parameter("team_color", country_index)
 

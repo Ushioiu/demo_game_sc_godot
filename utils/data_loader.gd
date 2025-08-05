@@ -1,6 +1,7 @@
 extends Node
 
 var squads : Dictionary[String, Array]
+var countries: Array[String] = ["DEFAULT"]
 
 func _init() -> void:
 	var json_file := FileAccess.open("res://assets/json/squads.json", FileAccess.READ)
@@ -12,6 +13,7 @@ func _init() -> void:
 		print(json.get_error_message())
 	for team in json.data:
 		var country_name := team["country"] as String
+		countries.append(country_name)
 		var players := team["players"] as Array
 		if !squads.has(country_name):
 			squads.set(country_name, [])
@@ -28,3 +30,6 @@ func _init() -> void:
 		
 func get_squad(country_name : String) -> Array:
 	return squads[country_name] if squads.has(country_name) else []
+
+func get_countries() -> Array:
+	return countries
