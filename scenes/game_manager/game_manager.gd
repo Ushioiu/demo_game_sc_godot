@@ -19,6 +19,8 @@ func _init() -> void:
 func _ready() -> void:
 	time_left = DURATION_GAME_SEC
 	GameEvents.impact_received.connect(on_impact_received)
+
+func start_game() -> void:
 	switch_state(State.RESET)
 
 func _process(_delta: float) -> void:

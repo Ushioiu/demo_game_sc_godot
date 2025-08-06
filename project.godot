@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Soccer Course"
-run/main_scene="uid://b4fmreod8s4gw"
+run/main_scene="uid://b4lttag3brun2"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
