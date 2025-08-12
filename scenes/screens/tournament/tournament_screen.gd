@@ -70,3 +70,5 @@ func test2() -> void:
 	print("test2")
 func test3() -> void:
 	print("test3")
+func test4() -> void:
+	print("test4")
