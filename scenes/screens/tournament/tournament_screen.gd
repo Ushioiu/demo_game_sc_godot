@@ -65,3 +65,6 @@ func get_flag_nodes_for_stage(stage: Tournament.Stage) -> Array[BracketFlag]:
 			if node is BracketFlag:
 				flag_nodes.append(node)
 	return flag_nodes
+
+func test2() -> void:
+	print("test2")
