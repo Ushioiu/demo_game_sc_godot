@@ -68,3 +68,5 @@ func get_flag_nodes_for_stage(stage: Tournament.Stage) -> Array[BracketFlag]:
 
 func test2() -> void:
 	print("test2")
+func test3() -> void:
+	print("test3")
