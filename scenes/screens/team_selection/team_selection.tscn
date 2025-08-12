@@ -6,6 +6,7 @@
 
 [node name="TeamSelection" type="Node"]
 script = ExtResource("1_hjg8y")
+music = 2
 
 [node name="Background" type="TextureRect" parent="."]
 offset_right = 40.0

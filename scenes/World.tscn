@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b4fmreod8s4gw"]
+[gd_scene load_steps=15 format=3 uid="uid://bg2ibhlstc31d"]
 
 [ext_resource type="Script" uid="uid://bpst4fjnj8nxb" path="res://scenes/camera_2d.gd" id="1_e3hyu"]
 [ext_resource type="Script" uid="uid://cykmaxsiwau88" path="res://scenes/world.gd" id="1_q5onr"]
@@ -21,6 +21,7 @@ size = Vector2(14.4446, 126.394)
 
 [node name="World" type="Node"]
 script = ExtResource("1_q5onr")
+music = 1
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("ball")]
 limit_left = 0

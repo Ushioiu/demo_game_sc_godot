@@ -16,10 +16,10 @@ func _init() -> void:
 	process_mode = ProcessMode.PROCESS_MODE_ALWAYS
 
 func _ready() -> void:
-	time_left = DURATION_GAME_SEC
 	GameEvents.impact_received.connect(on_impact_received)
 
 func start_game() -> void:
+	time_left = DURATION_GAME_SEC
 	switch_state(State.RESET)
 
 func _process(_delta: float) -> void:

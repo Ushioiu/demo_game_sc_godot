@@ -51,6 +51,9 @@ var country: String
 var spawn_position := Vector2.ZERO
 var kickoff_position := Vector2.ZERO
 var weight_on_duty_seteering := 0.0
+var mini_position_colorrect: ColorRect
+var mini_map_rect: Control
+var mini_map_scale: Vector2
 
 func _ready() -> void:
 	set_ai_behavior()
@@ -70,6 +73,7 @@ func _process(delta: float) -> void:
 	flip_sprites()
 	set_sprite_visibility()
 	process_gravity(delta)
+	refresh_mini_map_position()
 	move_and_slide()
 
 func initialize(context_position: Vector2, context_kickoff_position: Vector2, context_ball: Ball, context_own_goal: Goal, context_target_goal: Goal, context_player_resource: PlayerResource, context_country: String) -> void:
@@ -86,6 +90,18 @@ func initialize(context_position: Vector2, context_kickoff_position: Vector2, co
 	country = context_country
 	heading = Vector2.LEFT if target_goal.position.x < position.x else Vector2.RIGHT
 	# add_to_group("players")
+
+func refresh_mini_map_position() -> void:
+	if mini_map_scale == null or mini_map_scale == Vector2.ZERO:
+		var map_size := Vector2(745,310)
+		mini_map_scale = map_size / mini_map_rect.size
+	if mini_map_rect != null and mini_position_colorrect != null:
+		if control_sheme == ControlScheme.P1:
+			mini_position_colorrect.color = Color.RED
+		elif control_sheme == ControlScheme.P2:
+			mini_position_colorrect.color = Color.BLUE
+		mini_position_colorrect.position = mini_map_rect.position + position / mini_map_scale - Vector2(6,6)
+		
 
 func set_shader_properies() -> void:
 	var countries := DataLoader.get_countries()

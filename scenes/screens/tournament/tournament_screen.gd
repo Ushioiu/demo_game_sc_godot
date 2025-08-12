@@ -22,6 +22,8 @@ var player_country: String = GameManager.player_setup[0]
 
 func _ready() -> void:
 	tournament = screen_data.tournament
+	if tournament.current_stage == Tournament.Stage.COMPLETE:
+		MusicPlayer.play_music(MusicPlayer.Music.WIN)
 	refresh_brackets()
 
 func _process(_delta) -> void:

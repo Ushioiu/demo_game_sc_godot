@@ -8,6 +8,7 @@ extends CanvasLayer
 @onready var goal_score_label: Label = $UIContainer/GoalScoreLabel
 @onready var score_info_label: Label = $UIContainer/ScoreInfoLabel
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var mini_map_rect: Control = $UIContainer/MiniMapTexture/MiniMapRect
 
 var last_ball_carrier: String = ""
 

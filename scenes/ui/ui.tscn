@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://cakno4thxy4v0"]
+[gd_scene load_steps=11 format=3 uid="uid://cakno4thxy4v0"]
 
 [ext_resource type="Script" uid="uid://dxswe00uqquvk" path="res://scenes/ui/ui.gd" id="1_f5cxw"]
 [ext_resource type="Texture2D" uid="uid://c5c4yidt4u03c" path="res://assets/art/ui/flags/flag-placeholder.png" id="1_u7n8c"]
+[ext_resource type="Texture2D" uid="uid://c83iceksiy1sb" path="res://assets/art/mini_map.png" id="2_0dwhk"]
 [ext_resource type="Texture2D" uid="uid://k3cn66d2xijv" path="res://assets/art/ui/goal.png" id="3_aac20"]
 [ext_resource type="Texture2D" uid="uid://cgqgm4w41ssv3" path="res://assets/art/ui/times-up.png" id="4_g5kmx"]
 
@@ -268,17 +269,37 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
+[node name="MiniMapTexture" type="TextureRect" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -48.0
+offset_right = 75.0
+offset_bottom = -3.0
+grow_vertical = 0
+texture = ExtResource("2_0dwhk")
+expand_mode = 1
+
+[node name="MiniMapRect" type="Control" parent="UIContainer/MiniMapTexture"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ColorRect" type="ColorRect" parent="UIContainer"]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -100.0
+offset_left = -200.0
 offset_top = -14.0
-offset_right = 100.0
-grow_horizontal = 2
+grow_horizontal = 0
 grow_vertical = 0
 color = Color(0.133333, 0.133333, 0.133333, 1)
 
