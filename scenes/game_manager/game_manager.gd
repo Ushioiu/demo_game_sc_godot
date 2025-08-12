@@ -46,6 +46,7 @@ func is_time_up() -> bool:
 
 func get_winner_country() -> String:
 	assert(!current_match.is_tied())
+	current_match.update_match_info()
 	return current_match.winner
 
 func increase_score(country_on_scored: String) -> void:

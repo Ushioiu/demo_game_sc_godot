@@ -21,13 +21,16 @@ var tournament: Tournament = null
 var player_country: String = GameManager.player_setup[0]
 
 func _ready() -> void:
-	tournament = Tournament.new()
+	tournament = screen_data.tournament
 	refresh_brackets()
 
 func _process(_delta) -> void:
 	if KeyUtils.is_action_just_pressed(Player.ControlScheme.P1, KeyUtils.Action.SHOOT):
-		tournament.advance()
-		refresh_brackets()
+		if tournament.current_stage < Tournament.Stage.COMPLETE:
+			transition_screen(SoccerGame.ScreenType.IN_GAME, screen_data)
+		else :
+			transition_screen(SoccerGame.ScreenType.MAIN_MENU)
+		SoundPlayer.play(SoundPlayer.Sound.UI_SELECT)
 
 func refresh_brackets() -> void:
 	for stage in range(tournament.current_stage + 1):
@@ -65,10 +68,3 @@ func get_flag_nodes_for_stage(stage: Tournament.Stage) -> Array[BracketFlag]:
 			if node is BracketFlag:
 				flag_nodes.append(node)
 	return flag_nodes
-
-func test2() -> void:
-	print("test2")
-func test3() -> void:
-	print("test3")
-func test4() -> void:
-	print("test4")
