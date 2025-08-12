@@ -63,7 +63,7 @@ func _ready() -> void:
 	permanent_damage_emit_area.body_entered.connect(on_tackle_player)
 	GameEvents.team_scored.connect(on_team_scored)
 	GameEvents.game_over.connect(on_game_over)
-	var initial_position := kickoff_position if country == GameManager.countries[0] else spawn_position
+	var initial_position := kickoff_position if country == GameManager.current_match.country_home else spawn_position
 	switch_states(State.RESETTING, PlayerStateData.build().set_reset_position(initial_position))
 
 func _process(delta: float) -> void:
